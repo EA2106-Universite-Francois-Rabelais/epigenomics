@@ -5,6 +5,27 @@ Differential methylation and differential expression are respectively detected w
 
 [](data/methylation_profiles.png)
 
+## Detection of DMC and DMR with the DSS package
+
+```
+library(DSS)
+#list.tables contains BSMAP tables
+#samples contains the corresponding sample names
+BSobj = makeBSseqData(list.tables, samples)
+#generate pairwise comparisons
+list.comp<-t(combn(samples, 2))
+list.comp<-sapply(1:nrow(list.comp), function(x)list(list.comp[x,]))
+#store pairwise comparisons
+list.diff<-vector(mode="list", length=length(list.comp))
+#iterate detection for each comparison
+for (i in 1:length(list.diff2)){
+		dmlTest.sm = DMLtest(BSobj, group1=list.comp[[i]][1], group2=list.comp[[i]][2], smoothing=TRUE)
+		dmls = data.table(callDML(dmlTest.sm, p.threshold=0.01))
+		dmrs = callDMR(dmlTest.sm, p.threshold=0.01)
+		list.diff[[i]]<-list(dmls[fdr<0.05], dmrs)
+}	
+```
+
 ## Required R packages
 
 ```
@@ -18,9 +39,17 @@ library(dynamicTreeCut)
 library(pheatmap)
 ```
 
-## Load data and R objects
+## R script content
 
-## Data exploration
+- 2.3.2 load annotation
+- 3.5.1 combine comparisons into a single table.
+- 3.5.2 annotate C sites
+- 3.5.3 inspect methylation profiles per gene features and context
+- 3.5.4 clusters samples according to profiles
+- 3.5.5 visualize the number of DMC and DMR
+- 3.5.6 Principal component analysis
+- 3.5.7 correlation between logFC and methylation level
+- 3.5.8 Methylation state of DEG
 
 ## Session info
 
